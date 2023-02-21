@@ -27,7 +27,7 @@ func main() {
 	router.GET("/loggeddatas/:client", getLoggeddataByClient)
 	router.POST("/loggeddatas", postLoggeddata)
 
-	router.Run("localhost:8080")
+	router.Run(":8080")
 }
 
 // getLoggeddata responds with the list of all data as JSON.
