@@ -1,0 +1,31 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Build sendIT and push to VM
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    sendit_path: /opt/sendit
+    sendit_binary: ~/github/sendIT/sendIT
+
+  #tasks:
+  # - name: Build sendIT
+  #    command: /usr/local/go/bin/go build -C ~/github/sendIT
+
+  tasks:
+  - name: Create application directory
+    file:
+      path: "{{ sendit_path }}"
+      state: directory
+      mode: '0750'
+
+  - name: Copy binary to server
+    copy:
+      src: "{{ sendit_binary }}"
+      dest: "{{ sendit_path }}"
+      mode: '0700'
+
+  - name: Launch sendIT
+    command: /opt/sendit/sendIT
+...
