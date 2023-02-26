@@ -26,6 +26,33 @@
       dest: "{{ sendit_path }}"
       mode: '0700'
 
+  - name: Ensure UFW is installed
+    package:
+      name: ufw
+      update_cache: true
+
+  - name: Reset UFW
+    ufw:
+      state: reset
+
+  - name: Enable UFW with required default setting
+    ufw:
+      rule: allow
+      port: 22
+      proto: tcp
+      state: enabled
+      policy: deny
+
+  - name: Allow access to sendIT from specific locations
+    ufw:
+     rule: allow
+     port: 8080
+     proto: tcp
+     from_ip: '{{ item }}'
+    with_items:
+      - 192.168.50.33
+      - 192.168.50.137
+
   - name: Launch sendIT
     command: /opt/sendit/sendIT
 ...
