@@ -53,6 +53,16 @@
       - 192.168.50.33
       - 192.168.50.137
 
-  - name: Launch sendIT
-    command: /opt/sendit/sendIT
+  - name: Configure sendIT Service
+    template:
+      src: sendit.service.j2
+      dest: /etc/systemd/system/sendit.service
+      mode: '0644'
+  
+  - name: Start sendIT service
+    systemd:
+      daemon_reload: true
+      service: sendit
+      state: restarted
+
 ...
