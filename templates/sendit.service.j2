@@ -1,0 +1,11 @@
+[Unit]
+Description=sendIT Logging
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/sendit/sendIT
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

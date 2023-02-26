@@ -64,5 +64,6 @@
       daemon_reload: true
       service: sendit
       state: restarted
+      enabled: true
 
 ...
