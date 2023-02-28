@@ -9,11 +9,13 @@
     sendit_path: /opt/sendit
     sendit_binary: ~/github/sendIT/sendIT
 
-  #tasks:
-  # - name: Build sendIT
-  #    command: /usr/local/go/bin/go build -C ~/github/sendIT
-
   tasks:
+
+  # Build the latest version of sendIT
+  - name: Build sendIT on local machine
+    become: no
+    local_action: command /usr/local/go/bin/go build -C ~/github/sendIT
+
   - name: Create application directory
     file:
       path: "{{ sendit_path }}"
@@ -31,10 +33,12 @@
       name: ufw
       update_cache: true
 
+  # Reset UFW config to ensure only desired addresses are whitelisted.
   - name: Reset UFW
     ufw:
       state: reset
 
+  # Set the default policy to allow only ssh access and enable the UFW service.
   - name: Enable UFW with required default setting
     ufw:
       rule: allow
@@ -43,6 +47,7 @@
       state: enabled
       policy: deny
 
+  # Open up sendIT port to approved addresses only.
   - name: Allow access to sendIT from specific locations
     ufw:
      rule: allow
@@ -53,12 +58,14 @@
       - 192.168.50.33
       - 192.168.50.137
 
+  # Create sendIT systemd service config
   - name: Configure sendIT Service
     template:
       src: sendit.service.j2
       dest: /etc/systemd/system/sendit.service
       mode: '0644'
-  
+
+  # Start sendIT service and ensure it survives reboots. Reload to accept any new config.
   - name: Start sendIT service
     systemd:
       daemon_reload: true
